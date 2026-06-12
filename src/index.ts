@@ -7,6 +7,7 @@ import morgan from "morgan";
 import cors from "cors";
 import app from "@/app";
 import { env } from "@/configs/env";
+import { startServer } from "@/prisma";
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -40,6 +41,8 @@ app.use(
 );
 
 const port: number = env.PORT;
+
+startServer();
 
 const server: Server = app.listen(port, () => {
 	console.log(`Server running at http://localhost:${port}`);

@@ -4,9 +4,10 @@ import z from "zod";
 dotenv.config();
 
 const envSchema = z.object({
-	PORT: z.coerce.number().default(5000),
+	PORT: z.coerce.number().default(8000),
 	NODE_ENV: z.enum(["development", "production"]).default("development"),
 	WHITELISTED_DOMAINS: z.array(z.string()).default(["http://localhost:3000"]),
+	DATABASE_URL: z.string(),
 });
 
 const parsedEnv = envSchema.safeParse(process.env);

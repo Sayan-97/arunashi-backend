@@ -1,0 +1,29 @@
+{
+	"compilerOptions": {
+		"target": "esnext",
+		"module": "esnext",
+		"types": ["node", "express"],
+		"lib": ["ESNext"],
+		"strict": true,
+		"sourceMap": true,
+		"incremental": false,
+		"declaration": true,
+		"declarationMap": true,
+		"moduleResolution": "bundler",
+		"moduleDetection": "force",
+		"isolatedModules": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noImplicitReturns": true,
+		"verbatimModuleSyntax": true,
+		"strictNullChecks": true,
+		"skipLibCheck": true,
+		"rootDir": "src",
+		"outDir": "dist",
+		"paths": {
+			"@/*": ["./src/*"]
+		}
+	},
+	"include": ["src/**/*"],
+	"exclude": ["node_modules", "dist"]
+}

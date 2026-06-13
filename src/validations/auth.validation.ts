@@ -7,3 +7,13 @@ export const SignupSchema = z.object({
 		.nonempty("Password is required")
 		.min(6, { error: "Password must be at least 6 characters" }),
 });
+
+export const activateSchema = z.object({
+	token: z.string().nonempty("Token is required"),
+	password: z
+		.string()
+		.nonempty("Password is required")
+		.min(6, { error: "Password must be at least 6 characters" }),
+});
+
+export type ActivateInput = z.infer<typeof activateSchema>;

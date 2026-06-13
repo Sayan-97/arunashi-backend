@@ -1,19 +1,13 @@
 import type { Request, Response } from "express";
-import { sendResponse } from "@/helpers/sendResponse";
-import { SignupSchema } from "@/validations/auth.validation";
-import { hashPassword } from "@/helpers/password";
+import { activateSchema } from "@/validations/auth.validation";
+import { activateAccount } from "@/services/auth.service";
 
-export async function signup(req: Request, res: Response) {
-	const { success, data, error } = SignupSchema.safeParse(req.body);
-	if (!success) throw error;
+export async function activateAccountController(req: Request, res: Response) {
+	const body = activateSchema.parse(req.body);
 
-	const { email, password } = data;
+	await activateAccount(body);
 
-	const hashedPassword = hashPassword(password);
-
-	return sendResponse(res, 201, {
+	res.json({
 		success: true,
-		message: "User created successfully",
-		data: { email, hashedPassword },
 	});
 }

@@ -10,6 +10,10 @@ import { sendResponse } from "@/helpers/sendResponse";
 import { HttpError } from "@/helpers/errors";
 import { errorHandler } from "@/middlewares/errorHandler";
 
+import { RegistrationRouter } from "@/routes/registration.route";
+import { AdminRouter } from "@/routes/admin.route";
+import { AuthRouter } from "@/routes/auth.route";
+
 const app: Express = express();
 
 app.use(express.json());
@@ -47,6 +51,10 @@ app.get(["/", "/health"], (_req, res) => {
 		message: "Server up and running!",
 	});
 });
+
+app.use("/api/registration", RegistrationRouter);
+app.use("/api/auth", AuthRouter);
+app.use("/api/admin", AdminRouter);
 
 app.all(/.*/, (_req, _res) => {
 	throw HttpError.NotFound("Route not found");

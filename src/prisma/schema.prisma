@@ -7,10 +7,64 @@ datasource db {
   provider = "postgresql"
 }
 
+enum RequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum UserRole {
+  ADMIN
+  USER
+}
+
+model RegistrationRequest {
+  id         String @id @default(uuid())
+  name       String
+  email      String @unique
+  company    String
+  phone      String
+  address    String
+  pressTitle String @map("press_title")
+
+  status RequestStatus @default(PENDING)
+
+  activationToken ActivationToken?
+  user            User?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("registration_requests")
+}
+
+model ActivationToken {
+  id    String @id @default(uuid())
+  token String @unique
+
+  registrationRequestId String              @unique @map("registration_request_id")
+  registrationRequest   RegistrationRequest @relation(fields: [registrationRequestId], references: [id], onDelete: Cascade)
+
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@map("activation_tokens")
+}
+
 model User {
-  id       String  @id @default(uuid())
-  email    String  @unique
-  password String?
+  id          String @id @default(uuid())
+  name        String
+  email       String @unique
+  password    String
+  company     String
+  phone       String
+  address     String
+  press_title String
+
+  role UserRole @default(USER)
+
+  registrationRequestId String              @unique @map("registration_request_id")
+  registrationRequest   RegistrationRequest @relation(fields: [registrationRequestId], references: [id])
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")

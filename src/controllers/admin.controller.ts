@@ -1,5 +1,6 @@
-import { approveRegistration } from "@/services/admin.service";
 import type { Request, Response } from "express";
+import { approveRegistration } from "@/services/admin.service";
+import { sendResponse } from "@/helpers/sendResponse";
 
 type ApproveRegistrationParams = {
 	id: string;
@@ -11,8 +12,9 @@ export async function approveRegistrationController(
 ) {
 	const result = await approveRegistration(req.params.id);
 
-	res.json({
+	return sendResponse(res, 200, {
 		success: true,
+		message: "Registration approved successfully",
 		data: result,
 	});
 }

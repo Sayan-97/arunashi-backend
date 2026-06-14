@@ -1,6 +1,6 @@
+import { randomUUID } from "node:crypto";
 import { HttpError } from "@/helpers/errors";
 import { prisma } from "@/prisma";
-import { randomUUID } from "node:crypto";
 
 export async function approveRegistration(requestId: string) {
 	const request = await prisma.registrationRequest.findUnique({
@@ -10,11 +10,11 @@ export async function approveRegistration(requestId: string) {
 	});
 
 	if (!request) {
-		throw new HttpError(404, "Request not found");
+		throw HttpError.NotFound("Request Not Found");
 	}
 
 	if (request.status !== "PENDING") {
-		throw new HttpError(400, "Request already processed");
+		throw HttpError.BadRequest("Request already processed");
 	}
 
 	const token = randomUUID();
@@ -38,7 +38,5 @@ export async function approveRegistration(requestId: string) {
 		}),
 	]);
 
-	return {
-		token,
-	};
+	return { token };
 }

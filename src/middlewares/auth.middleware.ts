@@ -1,37 +1,40 @@
 import { HttpError } from "@/helpers/errors";
 import type { Request, Response, NextFunction } from "express";
 import { verifyAccessToken } from "@/helpers/tokens";
+
 export async function authenticate(
 	req: Request,
 	_res: Response,
 	next: NextFunction,
 ) {
-	const authHeader = req.headers.authorization;
+	const token = req.cookies?.accessToken;
 
-	if (!authHeader?.startsWith("Bearer ")) {
-		throw new HttpError(401, "Unauthorized");
+	if (!token) {
+		throw HttpError.Unauthorized("Unauthorized");
 	}
 
-	const token = authHeader.split(" ")[1];
+	try {
+		const payload = await verifyAccessToken(token);
 
-	const payload = await verifyAccessToken(token);
+		req.user = {
+			id: payload.sub as string,
+			role: payload.role as string,
+		};
 
-	req.user = {
-		id: payload.sub as string,
-		role: payload.role as string,
-	};
-
-	next();
+		next();
+	} catch (_error) {
+		throw HttpError.Unauthorized("Unauthorized");
+	}
 }
 
 export function authorize(...roles: string[]) {
 	return (req: Request, _res: Response, next: NextFunction) => {
 		if (!req.user) {
-			throw new HttpError(401, "Unauthorized");
+			throw HttpError.Unauthorized("Unauthorized");
 		}
 
 		if (!roles.includes(req.user.role)) {
-			throw new HttpError(403, "Forbidden");
+			throw HttpError.Forbidden("Forbidden");
 		}
 
 		next();

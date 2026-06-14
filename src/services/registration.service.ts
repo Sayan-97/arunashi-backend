@@ -10,7 +10,7 @@ export async function createRegistrationRequest(payload: RegisterInput) {
 	});
 
 	if (existing) {
-		throw new HttpError(409, "Registration already exists");
+		throw HttpError.Conflict("Registration already exists");
 	}
 
 	return prisma.registrationRequest.create({

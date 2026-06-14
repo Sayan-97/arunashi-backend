@@ -1,8 +1,13 @@
+import argon2 from "argon2";
+import type { JWTPayload } from "jose";
 import { HttpError } from "@/helpers/errors";
 import { prisma } from "@/prisma";
-import argon2 from "argon2";
 import type { ActivateInput, LoginInput } from "@/validations/auth.validation";
-import { createAccessToken } from "@/helpers/tokens";
+import {
+	createAccessToken,
+	createRefreshToken,
+	verifyRefreshToken,
+} from "@/helpers/tokens";
 
 export async function activateAccount(payload: ActivateInput) {
 	const activation = await prisma.activationToken.findUnique({
@@ -15,11 +20,11 @@ export async function activateAccount(payload: ActivateInput) {
 	});
 
 	if (!activation) {
-		throw new HttpError(404, "Invalid token");
+		throw HttpError.NotFound("Invalid Token");
 	}
 
 	if (activation.expiresAt.getTime() < Date.now()) {
-		throw new HttpError(400, "Token expired");
+		throw HttpError.NotFound("Token Expired");
 	}
 
 	const passwordHash = await argon2.hash(payload.password);
@@ -56,14 +61,90 @@ export async function login(payload: LoginInput) {
 	});
 
 	if (!user) {
-		throw new HttpError(401, "Invalid credentials");
+		throw HttpError.Unauthorized("Invalid credentials");
 	}
 
 	const valid = await argon2.verify(user.password, payload.password);
 
 	if (!valid) {
-		throw new HttpError(401, "Invalid credentials");
+		throw HttpError.Unauthorized("Invalid credentials");
 	}
 
-	return createAccessToken(user);
+	const accessToken = await createAccessToken(user);
+	const refreshTokenString = await createRefreshToken(user);
+
+	// Store refresh token in database
+	await prisma.refreshToken.create({
+		data: {
+			token: refreshTokenString,
+			userId: user.id,
+			expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+		},
+	});
+
+	return { user, accessToken, refreshToken: refreshTokenString };
+}
+
+export async function refresh(refreshTokenString: string) {
+	let payload: JWTPayload;
+	try {
+		payload = await verifyRefreshToken(refreshTokenString);
+	} catch (_err) {
+		throw HttpError.Unauthorized("Invalid or expired refresh token");
+	}
+
+	if (payload?.type !== "refresh" || !payload?.sub) {
+		throw HttpError.Unauthorized("Invalid refresh token payload");
+	}
+
+	// Find in database
+	const storedToken = await prisma.refreshToken.findUnique({
+		where: { token: refreshTokenString },
+		include: { user: true },
+	});
+
+	if (!storedToken) {
+		throw HttpError.Unauthorized("Refresh token not found or already used");
+	}
+
+	if (storedToken.expiresAt.getTime() < Date.now()) {
+		// Clean up expired token
+		await prisma.refreshToken.delete({ where: { id: storedToken.id } });
+		throw HttpError.Unauthorized("Refresh token expired");
+	}
+
+	const user = storedToken.user;
+	const newAccessToken = await createAccessToken(user);
+	const newRefreshTokenString = await createRefreshToken(user);
+
+	// Rotate tokens in database using a transaction
+	await prisma.$transaction([
+		prisma.refreshToken.delete({
+			where: { id: storedToken.id },
+		}),
+		prisma.refreshToken.create({
+			data: {
+				token: newRefreshTokenString,
+				userId: user.id,
+				expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+			},
+		}),
+	]);
+
+	return {
+		user,
+		accessToken: newAccessToken,
+		refreshToken: newRefreshTokenString,
+	};
+}
+
+export async function logout(refreshTokenString: string) {
+	const storedToken = await prisma.refreshToken.findUnique({
+		where: { token: refreshTokenString },
+	});
+	if (storedToken) {
+		await prisma.refreshToken.delete({
+			where: { id: storedToken.id },
+		});
+	}
 }

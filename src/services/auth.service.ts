@@ -1,7 +1,8 @@
 import { HttpError } from "@/helpers/errors";
 import { prisma } from "@/prisma";
 import argon2 from "argon2";
-import type { ActivateInput } from "@/validations/auth.validation";
+import type { ActivateInput, LoginInput } from "@/validations/auth.validation";
+import { createAccessToken } from "@/helpers/tokens";
 
 export async function activateAccount(payload: ActivateInput) {
 	const activation = await prisma.activationToken.findUnique({
@@ -45,4 +46,24 @@ export async function activateAccount(payload: ActivateInput) {
 			},
 		}),
 	]);
+}
+
+export async function login(payload: LoginInput) {
+	const user = await prisma.user.findUnique({
+		where: {
+			email: payload.email,
+		},
+	});
+
+	if (!user) {
+		throw new HttpError(401, "Invalid credentials");
+	}
+
+	const valid = await argon2.verify(user.password, payload.password);
+
+	if (!valid) {
+		throw new HttpError(401, "Invalid credentials");
+	}
+
+	return createAccessToken(user);
 }

@@ -13,6 +13,7 @@ import { errorHandler } from "@/middlewares/errorHandler";
 import { RegistrationRouter } from "@/routes/registration.route";
 import { AdminRouter } from "@/routes/admin.route";
 import { AuthRouter } from "@/routes/auth.route";
+import { UserRouter } from "./routes/user.route";
 
 const app: Express = express();
 
@@ -54,6 +55,7 @@ app.get(["/", "/health"], (_req, res) => {
 
 app.use("/api/registration", RegistrationRouter);
 app.use("/api/auth", AuthRouter);
+app.use("/api/user", UserRouter);
 app.use("/api/admin", AdminRouter);
 
 app.all(/.*/, (_req, _res) => {

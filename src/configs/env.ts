@@ -15,6 +15,7 @@ const envSchema = z.object({
 		]),
 	DATABASE_URL: z.string(),
 	JWT_SECRET: z.string(),
+	ADMIN_EMAIL: z.string(),
 	GMAIL_USER: z.string(),
 	GMAIL_APP_PASSWORD: z.string(),
 	FRONTEND_URL: z.string(),

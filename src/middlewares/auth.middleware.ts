@@ -7,24 +7,76 @@ export async function authenticate(
 	_res: Response,
 	next: NextFunction,
 ) {
-	const token = req.cookies?.adminAccessToken || req.cookies?.accessToken;
+	const adminToken = req.cookies?.arunashiAdminAccessToken;
+	const userToken = req.cookies?.arunashiAccessToken;
 
-	if (!token) {
+	if (!adminToken && !userToken) {
 		throw HttpError.Unauthorized("Unauthorized");
 	}
 
-	try {
-		const payload = await verifyAccessToken(token);
+	// Check if this request is targeting an admin route
+	const isAdminRoute =
+		req.originalUrl.includes("/admin") || req.path.includes("/admin");
 
-		req.user = {
-			id: payload.sub as string,
-			role: payload.role as string,
-		};
+	if (isAdminRoute) {
+		if (adminToken) {
+			try {
+				const payload = await verifyAccessToken(adminToken);
+				req.user = {
+					id: payload.sub as string,
+					role: payload.role as string,
+				};
+				return next();
+			} catch (_error) {
+				if (!userToken) {
+					throw HttpError.Unauthorized("Unauthorized");
+				}
+			}
+		}
 
-		next();
-	} catch (_error) {
-		throw HttpError.Unauthorized("Unauthorized");
+		if (userToken) {
+			try {
+				const payload = await verifyAccessToken(userToken);
+				req.user = {
+					id: payload.sub as string,
+					role: payload.role as string,
+				};
+				return next();
+			} catch (_error) {
+				throw HttpError.Unauthorized("Unauthorized");
+			}
+		}
+	} else {
+		if (userToken) {
+			try {
+				const payload = await verifyAccessToken(userToken);
+				req.user = {
+					id: payload.sub as string,
+					role: payload.role as string,
+				};
+				return next();
+			} catch (_error) {
+				if (!adminToken) {
+					throw HttpError.Unauthorized("Unauthorized");
+				}
+			}
+		}
+
+		if (adminToken) {
+			try {
+				const payload = await verifyAccessToken(adminToken);
+				req.user = {
+					id: payload.sub as string,
+					role: payload.role as string,
+				};
+				return next();
+			} catch (_error) {
+				throw HttpError.Unauthorized("Unauthorized");
+			}
+		}
 	}
+
+	throw HttpError.Unauthorized("Unauthorized");
 }
 
 export function authorize(...roles: string[]) {

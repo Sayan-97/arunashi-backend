@@ -2,6 +2,7 @@ import { env } from "@/configs/env";
 import { HttpError } from "@/helpers/errors";
 import { prisma } from "@/prisma";
 import type { RequestStatus } from "@/generated/prisma/client";
+import { sendProductRequestEmail } from "@/services/email.service";
 
 export async function fetchShopifyProducts() {
 	const domain = env.SHOPIFY_STORE_DOMAIN;
@@ -40,13 +41,31 @@ export async function fetchShopifyProducts() {
 }
 
 export async function submitProductRequest(userId: string, items: any) {
-	return prisma.productRequest.create({
+	const request = await prisma.productRequest.create({
 		data: {
 			userId,
 			items,
 			status: "PENDING",
 		},
+		include: {
+			user: {
+				select: {
+					name: true,
+					email: true,
+					company: true,
+				},
+			},
+		},
 	});
+
+	// Send email notification to admin asynchronously
+	try {
+		await sendProductRequestEmail(request);
+	} catch (error) {
+		console.error("Failed to send new product request email to admin:", error);
+	}
+
+	return request;
 }
 
 export async function getUserRequests(userId: string) {

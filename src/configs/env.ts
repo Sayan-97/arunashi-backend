@@ -6,7 +6,9 @@ dotenv.config();
 const envSchema = z.object({
 	PORT: z.coerce.number().default(8000),
 	NODE_ENV: z.enum(["development", "production"]).default("development"),
-	WHITELISTED_DOMAINS: z.array(z.string()).default(["http://localhost:3000"]),
+	WHITELISTED_DOMAINS: z
+		.array(z.string())
+		.default(["http://localhost:3000", "https://arunashi.vercel.app"]),
 	DATABASE_URL: z.string(),
 	JWT_SECRET: z.string(),
 	GMAIL_USER: z.string(),

@@ -7,7 +7,11 @@ import { registerGracefulShutdown } from "@/helpers/gracefulShutdown";
 
 await startServer();
 
-const server: Server = app.listen(env.PORT, () => {
+const server: Server = app.listen(env.PORT, (err?: any) => {
+	if (err) {
+		console.error(`Failed to start server: ${err.message || err}`);
+		process.exit(1);
+	}
 	console.log(`Server running at http://localhost:${env.PORT}`);
 });
 

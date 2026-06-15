@@ -16,7 +16,7 @@
 	},
 	"scripts": {
 		"dev": "tsx watch src/index.ts",
-		"build": "tsup",
+		"build": "prisma generate --schema=src/prisma/schema.prisma && tsup",
 		"start": "node dist/index.js",
 		"check-types": "tsc --noEmit",
 		"biome:lint": "biome lint --write",

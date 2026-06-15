@@ -8,7 +8,11 @@ const envSchema = z.object({
 	NODE_ENV: z.enum(["development", "production"]).default("development"),
 	WHITELISTED_DOMAINS: z
 		.array(z.string())
-		.default(["http://localhost:3000", "https://arunashi.vercel.app"]),
+		.default([
+			"http://localhost:3000",
+			"https://arunashi.vercel.app",
+			"https://arunashi-admin.vercel.app",
+		]),
 	DATABASE_URL: z.string(),
 	JWT_SECRET: z.string(),
 	GMAIL_USER: z.string(),

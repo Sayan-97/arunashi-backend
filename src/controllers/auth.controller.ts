@@ -30,8 +30,12 @@ export async function loginController(req: Request, res: Response) {
 
 	const { user, accessToken, refreshToken } = await login(body);
 
-	res.cookie("accessToken", accessToken, accessTokenCookieOptions);
-	res.cookie("refreshToken", refreshToken, refreshTokenCookieOptions);
+	const isAdmin = user.role === "ADMIN";
+	const accessCookieName = isAdmin ? "adminAccessToken" : "accessToken";
+	const refreshCookieName = isAdmin ? "adminRefreshToken" : "refreshToken";
+
+	res.cookie(accessCookieName, accessToken, accessTokenCookieOptions);
+	res.cookie(refreshCookieName, refreshToken, refreshTokenCookieOptions);
 
 	const { password: _p, ...userWithoutPassword } = user;
 
@@ -43,7 +47,7 @@ export async function loginController(req: Request, res: Response) {
 }
 
 export async function refreshController(req: Request, res: Response) {
-	const token = req.cookies?.refreshToken;
+	const token = req.cookies?.adminRefreshToken || req.cookies?.refreshToken;
 
 	if (!token) {
 		throw HttpError.Unauthorized("Refresh token required");
@@ -51,8 +55,12 @@ export async function refreshController(req: Request, res: Response) {
 
 	const { user, accessToken, refreshToken } = await refresh(token);
 
-	res.cookie("accessToken", accessToken, accessTokenCookieOptions);
-	res.cookie("refreshToken", refreshToken, refreshTokenCookieOptions);
+	const isAdmin = user.role === "ADMIN";
+	const accessCookieName = isAdmin ? "adminAccessToken" : "accessToken";
+	const refreshCookieName = isAdmin ? "adminRefreshToken" : "refreshToken";
+
+	res.cookie(accessCookieName, accessToken, accessTokenCookieOptions);
+	res.cookie(refreshCookieName, refreshToken, refreshTokenCookieOptions);
 
 	const { password: _p, ...userWithoutPassword } = user;
 
@@ -64,7 +72,7 @@ export async function refreshController(req: Request, res: Response) {
 }
 
 export async function logoutController(req: Request, res: Response) {
-	const token = req.cookies?.refreshToken;
+	const token = req.cookies?.adminRefreshToken || req.cookies?.refreshToken;
 
 	if (token) {
 		await logout(token);
@@ -73,6 +81,8 @@ export async function logoutController(req: Request, res: Response) {
 	const { maxAge: _am, ...accessClear } = accessTokenCookieOptions;
 	const { maxAge: _rm, ...refreshClear } = refreshTokenCookieOptions;
 
+	res.clearCookie("adminAccessToken", accessClear);
+	res.clearCookie("adminRefreshToken", refreshClear);
 	res.clearCookie("accessToken", accessClear);
 	res.clearCookie("refreshToken", refreshClear);
 

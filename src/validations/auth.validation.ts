@@ -1,12 +1,18 @@
 import { z } from "zod";
 
-export const activateSchema = z.object({
-	token: z.string().nonempty("Token is required"),
-	password: z
-		.string()
-		.nonempty("Password is required")
-		.min(6, { error: "Password must be at least 6 characters" }),
-});
+export const activateSchema = z
+	.object({
+		token: z.string().nonempty("Token is required"),
+		password: z
+			.string()
+			.nonempty("Password is required")
+			.min(6, { error: "Password must be at least 6 characters" }),
+		confirmPassword: z.string().nonempty("Confirm password is required"),
+	})
+	.refine((data) => data.password === data.confirmPassword, {
+		message: "Passwords do not match",
+		path: ["confirmPassword"],
+	});
 
 export type ActivateInput = z.infer<typeof activateSchema>;
 

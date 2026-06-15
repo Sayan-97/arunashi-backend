@@ -1,0 +1,103 @@
+import { env } from "@/configs/env";
+import { HttpError } from "@/helpers/errors";
+import { prisma } from "@/prisma";
+import type { RequestStatus } from "@/generated/prisma/client";
+
+export async function fetchShopifyProducts() {
+	const domain = env.SHOPIFY_STORE_DOMAIN;
+	const token = env.SHOPIFY_ADMIN_ACCESS_TOKEN;
+
+	try {
+		const response = await fetch(
+			`https://${domain}/admin/api/2024-04/products.json?limit=250`,
+			{
+				headers: {
+					"X-Shopify-Access-Token": token,
+					"Content-Type": "application/json",
+				},
+			},
+		);
+
+		if (!response.ok) {
+			const errorText = await response.text();
+			console.error(
+				"Shopify Products Fetch Error Status:",
+				response.status,
+				errorText,
+			);
+			throw HttpError.InternalServerError(
+				"Failed to fetch products from Shopify",
+			);
+		}
+
+		const data = (await response.json()) as { products?: any[] };
+		return data.products || [];
+	} catch (error) {
+		console.error("Shopify Products Fetch Error:", error);
+		if (error instanceof HttpError) throw error;
+		throw HttpError.InternalServerError("Failed to communicate with Shopify");
+	}
+}
+
+export async function submitProductRequest(userId: string, items: any) {
+	return prisma.productRequest.create({
+		data: {
+			userId,
+			items,
+			status: "PENDING",
+		},
+	});
+}
+
+export async function getUserRequests(userId: string) {
+	return prisma.productRequest.findMany({
+		where: {
+			userId,
+		},
+		orderBy: {
+			createdAt: "desc",
+		},
+	});
+}
+
+export async function getAllRequests() {
+	return prisma.productRequest.findMany({
+		orderBy: {
+			createdAt: "desc",
+		},
+		include: {
+			user: {
+				select: {
+					id: true,
+					name: true,
+					email: true,
+					company: true,
+				},
+			},
+		},
+	});
+}
+
+export async function updateRequestStatus(
+	requestId: string,
+	status: RequestStatus,
+) {
+	const existing = await prisma.productRequest.findUnique({
+		where: {
+			id: requestId,
+		},
+	});
+
+	if (!existing) {
+		throw HttpError.NotFound("Product request not found");
+	}
+
+	return prisma.productRequest.update({
+		where: {
+			id: requestId,
+		},
+		data: {
+			status,
+		},
+	});
+}

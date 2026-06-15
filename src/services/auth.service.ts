@@ -61,6 +61,16 @@ export async function login(payload: LoginInput) {
 	});
 
 	if (!user) {
+		const request = await prisma.registrationRequest.findUnique({
+			where: {
+				email: payload.email,
+			},
+		});
+
+		if (request && request.status === "PENDING") {
+			throw HttpError.Forbidden("PENDING_APPROVAL");
+		}
+
 		throw HttpError.Unauthorized("Invalid credentials");
 	}
 

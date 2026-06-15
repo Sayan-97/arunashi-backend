@@ -7,7 +7,7 @@ export async function authenticate(
 	_res: Response,
 	next: NextFunction,
 ) {
-	const token = req.cookies?.accessToken;
+	const token = req.cookies?.adminAccessToken || req.cookies?.accessToken;
 
 	if (!token) {
 		throw HttpError.Unauthorized("Unauthorized");

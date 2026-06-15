@@ -20,6 +20,15 @@ pnpm install
 ```
 *Note: This will install all dependencies and set up the Git hooks via Husky.*
 
+### Environment Variables
+Create a `.env` file in the root directory and configure the following variables:
+```env
+PORT=8000
+NODE_ENV=development
+DATABASE_URL=postgresql://user:password@localhost:5432/db_name
+JWT_SECRET=your_jwt_secret_key
+```
+
 ### Available Scripts
 
 During development, you will primarily use the following pnpm scripts:
@@ -36,30 +45,46 @@ During development, you will primarily use the following pnpm scripts:
 
 ---
 
+## 🔒 Authentication Architecture
+
+The server implements a production-grade **HttpOnly Cookie Authentication** architecture with **Refresh Token Rotation (RTR)**.
+
+- **Access Token**: Valid for 15 minutes. Stored in an HttpOnly cookie named `accessToken`.
+- **Refresh Token**: Valid for 7 days. Stored in an HttpOnly cookie named `refreshToken`.
+- **Token Rotation**: Each time the tokens are refreshed:
+  1. The old refresh token is verified and deleted from the database.
+  2. A new access token and refresh token are generated.
+  3. The new refresh token is saved to the database.
+  4. Both new cookies are sent to the client.
+- **Security**: Raw tokens are never returned in JSON responses or stored in `localStorage`/`sessionStorage` to mitigate XSS attacks.
+
+---
+
 ## 🌐 Endpoints & Routes
 
 All API responses use a standardized JSON format.
 
-### 1. Server Health Check
-- **Method**: `GET`
-- **Paths**: `/` or `/health`
-- **Description**: Verifies if the backend server is running and accessible.
-- **Response (200 OK)**:
-```json
-{
-  "success": true,
-  "message": "Server up and running!"
-}
-```
+### 1. General & Health
+- **GET `/` / `/health`**: Check server health status.
 
-### 2. Wildcard Route (404 Fallback)
-- **Method**: `ANY`
-- **Path**: `/*` (Any undefined route)
-- **Description**: Handles all unregistered route requests and returns a standard not-found response.
-- **Response (404 Not Found)**:
-```json
-{
-  "success": false,
-  "message": "Route not found"
-}
-```
+### 2. Registration Request Flow
+- **POST `/api/registration/register`**: Submit a new registration request.
+  - **Body**: `{ name, email, company, phone, address, pressTitle }`
+- **POST `/api/admin/registrations/:id/approve`**: Approve a registration request (creates activation token).
+
+### 3. Authentication & Account
+- **POST `/api/auth/activate`**: Activate an approved registration request by creating a password.
+  - **Body**: `{ token, password }`
+- **POST `/api/auth/login`**: Authenticate using credentials.
+  - **Body**: `{ email, password }`
+  - **Cookies Set**: `accessToken`, `refreshToken`
+- **POST `/api/auth/refresh`**: Refresh and rotate session tokens using the `refreshToken` cookie.
+- **POST `/api/auth/logout`**: Terminate the session (deletes refresh token from database, clears cookies).
+- **GET `/api/auth/profile`**: Retrieve the profile of the currently logged-in user. (Requires auth cookie).
+
+### 4. User Profile
+- **POST `/api/user/profile`**: Alternative route to retrieve current user profile. (Requires auth cookie).
+
+### 5. Wildcard Route (404 Fallback)
+- **ANY `/*`**: Handles all unregistered route requests.
+

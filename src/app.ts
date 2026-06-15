@@ -14,6 +14,8 @@ import { RegistrationRouter } from "@/routes/registration.route";
 import { AdminRouter } from "@/routes/admin.route";
 import { AuthRouter } from "@/routes/auth.route";
 import { UserRouter } from "./routes/user.route";
+import { ProductRouter } from "@/routes/product.route";
+import { SavedListRouter } from "@/routes/savedList.route";
 
 const app: Express = express();
 
@@ -57,6 +59,8 @@ app.use("/api/registration", RegistrationRouter);
 app.use("/api/auth", AuthRouter);
 app.use("/api/user", UserRouter);
 app.use("/api/admin", AdminRouter);
+app.use("/api/products", ProductRouter);
+app.use("/api/saved-lists", SavedListRouter);
 
 app.all(/.*/, (_req, _res) => {
 	throw HttpError.NotFound("Route not found");

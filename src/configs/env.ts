@@ -9,6 +9,11 @@ const envSchema = z.object({
 	WHITELISTED_DOMAINS: z.array(z.string()).default(["http://localhost:3000"]),
 	DATABASE_URL: z.string(),
 	JWT_SECRET: z.string(),
+	GMAIL_USER: z.string(),
+	GMAIL_APP_PASSWORD: z.string(),
+	FRONTEND_URL: z.string(),
+	SHOPIFY_STORE_DOMAIN: z.string(),
+	SHOPIFY_ADMIN_ACCESS_TOKEN: z.string(),
 });
 
 const parsedEnv = envSchema.safeParse(process.env);

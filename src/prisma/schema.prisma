@@ -56,17 +56,19 @@ model User {
   name        String
   email       String @unique
   password    String
-  company     String
-  phone       String
-  address     String
-  press_title String
+  company     String?
+  phone       String?
+  address     String?
+  press_title String?
 
   role UserRole @default(USER)
 
-  registrationRequestId String              @unique @map("registration_request_id")
-  registrationRequest   RegistrationRequest @relation(fields: [registrationRequestId], references: [id])
+  registrationRequestId String?             @unique @map("registration_request_id")
+  registrationRequest   RegistrationRequest? @relation(fields: [registrationRequestId], references: [id])
 
-  refreshTokens RefreshToken[]
+  refreshTokens   RefreshToken[]
+  savedLists      SavedList[]
+  productRequests ProductRequest[]
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -84,4 +86,30 @@ model RefreshToken {
 
   @@map("refresh_tokens")
 }
+
+model SavedList {
+  id        String   @id @default(uuid())
+  name      String
+  items     Json
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("saved_lists")
+}
+
+model ProductRequest {
+  id        String        @id @default(uuid())
+  items     Json
+  status    RequestStatus @default(PENDING)
+  userId    String        @map("user_id")
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime      @default(now()) @map("created_at")
+  updatedAt DateTime      @updatedAt @map("updated_at")
+
+  @@map("product_requests")
+}
+
+
 

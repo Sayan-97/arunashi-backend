@@ -1,5 +1,9 @@
 import type { Request, Response } from "express";
-import { approveRegistration } from "@/services/admin.service";
+import {
+	approveRegistration,
+	getPendingRegistrations,
+	getApprovedRetailers,
+} from "@/services/admin.service";
 import { sendResponse } from "@/helpers/sendResponse";
 
 type ApproveRegistrationParams = {
@@ -16,5 +20,29 @@ export async function approveRegistrationController(
 		success: true,
 		message: "Registration approved successfully",
 		data: result,
+	});
+}
+
+export async function getPendingRegistrationsController(
+	_req: Request,
+	res: Response,
+) {
+	const data = await getPendingRegistrations();
+
+	return sendResponse(res, 200, {
+		success: true,
+		data,
+	});
+}
+
+export async function getApprovedRetailersController(
+	_req: Request,
+	res: Response,
+) {
+	const data = await getApprovedRetailers();
+
+	return sendResponse(res, 200, {
+		success: true,
+		data,
 	});
 }

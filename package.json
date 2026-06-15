@@ -22,6 +22,7 @@
 		"biome:lint": "biome lint --write",
 		"biome:format": "biome format --write",
 		"biome:check": "biome check --write",
+		"onboard:admin": "tsx src/scripts/onboard-admin.ts",
 		"prepare": "husky"
 	},
 	"keywords": [],
@@ -41,6 +42,7 @@
 		"helmet": "^8.2.0",
 		"jose": "^6.2.3",
 		"morgan": "^1.11.0",
+		"nodemailer": "^8.0.11",
 		"pg": "^8.21.0",
 		"zod": "^4.4.3"
 	},
@@ -52,6 +54,7 @@
 		"@types/express": "^5.0.6",
 		"@types/morgan": "^1.9.10",
 		"@types/node": "^25.9.3",
+		"@types/nodemailer": "^8.0.1",
 		"@types/pg": "^8.20.0",
 		"husky": "^9.1.7",
 		"lint-staged": "^17.0.7",

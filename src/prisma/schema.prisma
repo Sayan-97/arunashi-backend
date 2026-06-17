@@ -111,5 +111,20 @@ model ProductRequest {
   @@map("product_requests")
 }
 
+model ActiveProduct {
+  id        String   @id
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("active_products")
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  action    String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("audit_logs")
+}
+
 
 

@@ -1,6 +1,10 @@
 import { Router } from "express";
 import {
 	getProductsController,
+	getCollectionsController,
+	getAdminProductsController,
+	activateProductController,
+	deactivateProductController,
 	submitProductRequestController,
 	getUserRequestsController,
 	getAllRequestsController,
@@ -11,6 +15,25 @@ import { authenticate, authorize } from "@/middlewares/auth.middleware";
 const router: Router = Router();
 
 router.get("/", getProductsController);
+router.get("/collections", getCollectionsController);
+router.get(
+	"/admin",
+	authenticate,
+	authorize("ADMIN"),
+	getAdminProductsController,
+);
+router.post(
+	"/:id/activate",
+	authenticate,
+	authorize("ADMIN"),
+	activateProductController,
+);
+router.post(
+	"/:id/deactivate",
+	authenticate,
+	authorize("ADMIN"),
+	deactivateProductController,
+);
 
 router.post("/requests", authenticate, submitProductRequestController);
 router.get("/requests/my", authenticate, getUserRequestsController);

@@ -3,8 +3,12 @@ import {
 	approveRegistration,
 	getPendingRegistrations,
 	getApprovedRetailers,
+	changeAdminPassword,
+	getAuditLogs,
 } from "@/services/admin.service";
 import { sendResponse } from "@/helpers/sendResponse";
+import { changePasswordSchema } from "@/validations/auth.validation";
+import { HttpError } from "@/helpers/errors";
 
 type ApproveRegistrationParams = {
 	id: string;
@@ -40,6 +44,34 @@ export async function getApprovedRetailersController(
 	res: Response,
 ) {
 	const data = await getApprovedRetailers();
+
+	return sendResponse(res, 200, {
+		success: true,
+		data,
+	});
+}
+
+export async function changePasswordController(req: Request, res: Response) {
+	if (!req.user) {
+		throw HttpError.Unauthorized("Unauthorized");
+	}
+
+	const body = changePasswordSchema.parse(req.body);
+
+	await changeAdminPassword(req.user.id, body);
+
+	return sendResponse(res, 200, {
+		success: true,
+		message: "Password changed successfully",
+	});
+}
+
+export async function getAuditLogsController(req: Request, res: Response) {
+	if (!req.user) {
+		throw HttpError.Unauthorized("Unauthorized");
+	}
+
+	const data = await getAuditLogs();
 
 	return sendResponse(res, 200, {
 		success: true,

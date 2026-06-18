@@ -1,0 +1,61 @@
+{
+	"id": "9917264658730",
+	"title": "Lotus Flower Diamond Bracelet",
+	"handle": "lotus-flower-diamond-bracelet",
+	"body_html": "<p><meta charset=\"utf-8\">Diamond petals unfold in a lotus motif, symbolizing transformation, balance, and nature’s quiet strength.</p>",
+	"vendor": "Arunashi",
+	"product_type": "Bracelet",
+	"tags": "Collectible Art",
+	"status": "active",
+	"variants": [
+		{
+			"id": "50718368301354",
+			"title": "18K White Gold / Diamond",
+			"price": "58500.00",
+			"sku": "2B000075 BXXXDIWGCA"
+		}
+	],
+	"images": [
+		{
+			"src": "https://cdn.shopify.com/s/files/1/0863/0032/8234/files/WhiteBackgroundImageInstructionsExamplesWebsite_5_a97b4a50-6272-4a42-926d-907ce1fb6d43.png?v=1766002630"
+		},
+		{
+			"src": "https://cdn.shopify.com/s/files/1/0863/0032/8234/files/2_d55221af-4bfb-48e0-b00e-e2ba8f618b2e.png?v=1766002630"
+		},
+		{
+			"src": "https://cdn.shopify.com/s/files/1/0863/0032/8234/files/3_f382df1a-c2ae-49c0-b0c9-03494b5266be.png?v=1766002630"
+		},
+		{
+			"src": "https://cdn.shopify.com/s/files/1/0863/0032/8234/files/4_277ef39a-1648-4121-bf60-54bbca5fae6c.png?v=1766002630"
+		},
+		{
+			"src": "https://cdn.shopify.com/s/files/1/0863/0032/8234/files/5_711c9732-9289-4790-8a2c-4b1180faecba.png?v=1766002630"
+		}
+	],
+	"media": [
+		{
+			"type": "image",
+			"src": "https://cdn.shopify.com/s/files/1/0863/0032/8234/files/WhiteBackgroundImageInstructionsExamplesWebsite_5_a97b4a50-6272-4a42-926d-907ce1fb6d43.png?v=1766002630"
+		},
+		{
+			"type": "image",
+			"src": "https://cdn.shopify.com/s/files/1/0863/0032/8234/files/2_d55221af-4bfb-48e0-b00e-e2ba8f618b2e.png?v=1766002630"
+		},
+		{
+			"type": "image",
+			"src": "https://cdn.shopify.com/s/files/1/0863/0032/8234/files/3_f382df1a-c2ae-49c0-b0c9-03494b5266be.png?v=1766002630"
+		},
+		{
+			"type": "image",
+			"src": "https://cdn.shopify.com/s/files/1/0863/0032/8234/files/4_277ef39a-1648-4121-bf60-54bbca5fae6c.png?v=1766002630"
+		},
+		{
+			"type": "image",
+			"src": "https://cdn.shopify.com/s/files/1/0863/0032/8234/files/5_711c9732-9289-4790-8a2c-4b1180faecba.png?v=1766002630"
+		},
+		{
+			"type": "video",
+			"src": "https://cdn.shopify.com/videos/c/vp/ac9cc8fd21584d55929bc49e492e38dc/ac9cc8fd21584d55929bc49e492e38dc.SD-480p-1.5Mbps-77837576.mp4"
+		}
+	]
+}

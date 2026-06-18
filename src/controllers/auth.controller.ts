@@ -91,10 +91,18 @@ export async function logoutController(req: Request, res: Response) {
 	const { maxAge: _am, ...accessClear } = accessTokenCookieOptions;
 	const { maxAge: _rm, ...refreshClear } = refreshTokenCookieOptions;
 
-	res.clearCookie("arunashiAdminAccessToken", accessClear);
-	res.clearCookie("arunashiAdminRefreshToken", refreshClear);
-	res.clearCookie("arunashiAccessToken", accessClear);
-	res.clearCookie("arunashiRefreshToken", refreshClear);
+	if (
+		req.cookies?.arunashiAdminRefreshToken ||
+		req.cookies?.arunashiAdminAccessToken
+	) {
+		res.clearCookie("arunashiAdminAccessToken", accessClear);
+		res.clearCookie("arunashiAdminRefreshToken", refreshClear);
+	}
+
+	if (req.cookies?.arunashiRefreshToken || req.cookies?.arunashiAccessToken) {
+		res.clearCookie("arunashiAccessToken", accessClear);
+		res.clearCookie("arunashiRefreshToken", refreshClear);
+	}
 
 	return sendResponse(res, 200, {
 		success: true,

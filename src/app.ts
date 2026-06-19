@@ -22,6 +22,8 @@ const app: Express = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+import path from "path";
+app.use("/public", express.static(path.join(process.cwd(), "public")));
 app.use(
 	cors({
 		origin(origin, callback) {
@@ -61,6 +63,12 @@ app.use("/api/user", UserRouter);
 app.use("/api/admin", AdminRouter);
 app.use("/api/products", ProductRouter);
 app.use("/api/saved-lists", SavedListRouter);
+import MagazineRouter from "@/routes/magazine.route";
+app.use("/api/magazines", MagazineRouter);
+import DiamondRouter from "@/routes/diamond.route";
+app.use("/api/diamonds", DiamondRouter);
+import GemstoneRouter from "@/routes/gemstone.route";
+app.use("/api/gemstones", GemstoneRouter);
 
 app.all(/.*/, (_req, _res) => {
 	throw HttpError.NotFound("Route not found");

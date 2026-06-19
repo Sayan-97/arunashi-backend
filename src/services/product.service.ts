@@ -22,6 +22,15 @@ export async function fetchShopifyProducts() {
                 tags
                 status
                 createdAt
+                collections(first: 10) {
+                    edges {
+                        node {
+                            id
+                            title
+                            handle
+                        }
+                    }
+                }
                 options {
                     id
                     name
@@ -160,6 +169,12 @@ export async function fetchShopifyProducts() {
 					: product.tags,
 				status: product.status?.toLowerCase(),
 				created_at: product.createdAt,
+				collections:
+					product.collections?.edges?.map((c: any) => ({
+						id: c.node.id.split("/").pop(),
+						title: c.node.title,
+						handle: c.node.handle,
+					})) || [],
 				options:
 					product.options?.map((opt: any) => ({
 						id: opt.id.split("/").pop(),
@@ -203,31 +218,74 @@ export async function fetchShopifyCollections() {
 	const domain = env.SHOPIFY_STORE_DOMAIN;
 	const token = env.SHOPIFY_ADMIN_ACCESS_TOKEN;
 
+	const query = `
+		query GetCollections {
+			collections(first: 250) {
+				edges {
+					node {
+						id
+						title
+						handle
+						updatedAt
+						image {
+							url
+							altText
+						}
+					}
+				}
+			}
+		}
+	`;
+
 	try {
 		const response = await fetch(
-			`https://${domain}/admin/api/2026-01/smart_collections.json`,
+			`https://${domain}/admin/api/2026-01/graphql.json`,
 			{
+				method: "POST",
 				headers: {
 					"X-Shopify-Access-Token": token,
 					"Content-Type": "application/json",
 				},
+				body: JSON.stringify({ query }),
 			},
 		);
 
-		if (!response.ok) {
-			const errorText = await response.text();
-			console.error(
-				"Shopify Collections Fetch Error Status:",
-				response.status,
-				errorText,
-			);
+		const data = (await response.json()) as any;
+
+		if (data.errors) {
+			console.error(data.errors);
 			throw HttpError.InternalServerError(
 				"Failed to fetch collections from Shopify",
 			);
 		}
 
-		const data = (await response.json()) as { collections?: any[] };
-		return data || [];
+		const collectionsConnection = data.data?.collections;
+
+		if (!collectionsConnection || !collectionsConnection.edges) {
+			return [];
+		}
+
+		const hiddenCollectionIds = [
+			"507303592234",
+			"507214889258",
+			"499669008682",
+			"472579932458",
+		];
+
+		return collectionsConnection.edges
+			.map((edge: any) => {
+				const node = edge.node;
+				return {
+					id: node.id.split("/").pop(),
+					title: node.title,
+					handle: node.handle,
+					updatedAt: node.updatedAt,
+					image: node.image
+						? { url: node.image.url, altText: node.image.altText }
+						: null,
+				};
+			})
+			.filter((col: any) => !hiddenCollectionIds.includes(col.id));
 	} catch (error) {
 		console.error("Shopify Collections Fetch Error:", error);
 		if (error instanceof HttpError) throw error;

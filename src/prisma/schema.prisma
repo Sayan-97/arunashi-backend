@@ -126,5 +126,31 @@ model AuditLog {
   @@map("audit_logs")
 }
 
+model Magazine {
+  id          String   @id @default(uuid())
+  link        String
+  image       String?
+  issueNumber String?  @map("issue_number")
+  date        DateTime 
+  createdAt   DateTime @default(now()) @map("created_at")
 
+  @@map("magazines")
+}
 
+model Diamond {
+  id        String   @id @default(uuid())
+  name      String
+  link      String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("diamonds")
+}
+
+model Gemstone {
+  id        String   @id @default(uuid())
+  name      String
+  link      String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("gemstones")
+}

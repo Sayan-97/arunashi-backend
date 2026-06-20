@@ -20,6 +20,7 @@ import { sendResponse } from "@/helpers/sendResponse";
 import { HttpError } from "@/helpers/errors";
 import { prisma } from "@/prisma";
 import { realtimeService } from "@/services/realtime.service";
+import { createNotification } from "@/services/notification.service";
 
 export async function getProductsController(_req: Request, res: Response) {
 	const [products, productData] = await Promise.all([
@@ -145,6 +146,18 @@ export async function submitProductRequestController(
 	const body = submitProductRequestSchema.parse(req.body);
 
 	const request = await submitProductRequest(req.user.id, body.items);
+
+	const userRecord = await prisma.user.findUnique({
+		where: { id: req.user.id },
+	});
+
+	// Create and save database notification (which also broadcasts to clients via SSE)
+	await createNotification(
+		"product_request",
+		"New Product Request",
+		`Product linesheet request submitted by ${userRecord?.company || userRecord?.name || "a retailer"}.`,
+		"/requests/pending-requests",
+	);
 
 	realtimeService.broadcast("requests:submitted", request);
 

@@ -73,6 +73,8 @@ import BannerRouter from "@/routes/banner.route";
 app.use("/api/banners", BannerRouter);
 import RealtimeRouter from "@/routes/realtime.route";
 app.use("/api/realtime", RealtimeRouter);
+import { NotificationRouter } from "@/routes/notification.route";
+app.use("/api/notifications", NotificationRouter);
 
 app.all(/.*/, (_req, _res) => {
 	throw HttpError.NotFound("Route not found");

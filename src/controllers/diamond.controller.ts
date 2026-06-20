@@ -20,7 +20,7 @@ export async function getDiamonds(_req: Request, res: Response) {
 }
 
 export async function createDiamond(req: Request, res: Response) {
-	if (!req.user || req.user.role !== "ADMIN") {
+	if (req.user?.role !== "ADMIN") {
 		throw HttpError.Unauthorized("Unauthorized");
 	}
 
@@ -48,7 +48,7 @@ export async function createDiamond(req: Request, res: Response) {
 }
 
 export async function updateDiamond(req: Request, res: Response) {
-	if (!req.user || req.user.role !== "ADMIN") {
+	if (req.user?.role !== "ADMIN") {
 		throw HttpError.Unauthorized("Unauthorized");
 	}
 
@@ -79,7 +79,7 @@ export async function updateDiamond(req: Request, res: Response) {
 }
 
 export async function deleteDiamond(req: Request, res: Response) {
-	if (!req.user || req.user.role !== "ADMIN") {
+	if (req.user?.role !== "ADMIN") {
 		throw HttpError.Unauthorized("Unauthorized");
 	}
 

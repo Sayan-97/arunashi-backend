@@ -20,7 +20,7 @@ export async function getMagazines(_req: Request, res: Response) {
 }
 
 export async function createMagazine(req: Request, res: Response) {
-	if (!req.user || req.user.role !== "ADMIN") {
+	if (req.user?.role !== "ADMIN") {
 		throw HttpError.Unauthorized("Unauthorized");
 	}
 
@@ -55,7 +55,7 @@ export async function createMagazine(req: Request, res: Response) {
 }
 
 export async function updateMagazine(req: Request, res: Response) {
-	if (!req.user || req.user.role !== "ADMIN") {
+	if (req.user?.role !== "ADMIN") {
 		throw HttpError.Unauthorized("Unauthorized");
 	}
 
@@ -93,7 +93,7 @@ export async function updateMagazine(req: Request, res: Response) {
 }
 
 export async function deleteMagazine(req: Request, res: Response) {
-	if (!req.user || req.user.role !== "ADMIN") {
+	if (req.user?.role !== "ADMIN") {
 		throw HttpError.Unauthorized("Unauthorized");
 	}
 

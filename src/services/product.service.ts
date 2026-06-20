@@ -104,7 +104,7 @@ export async function fetchShopifyProducts() {
 
 		const productsConnection = data.data?.products;
 
-		if (!productsConnection || !productsConnection.edges) {
+		if (!productsConnection?.edges) {
 			return [];
 		}
 
@@ -261,7 +261,7 @@ export async function fetchShopifyCollections() {
 
 		const collectionsConnection = data.data?.collections;
 
-		if (!collectionsConnection || !collectionsConnection.edges) {
+		if (!collectionsConnection?.edges) {
 			return [];
 		}
 

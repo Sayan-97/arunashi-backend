@@ -20,7 +20,7 @@ export async function getGemstones(_req: Request, res: Response) {
 }
 
 export async function createGemstone(req: Request, res: Response) {
-	if (!req.user || req.user.role !== "ADMIN") {
+	if (req.user?.role !== "ADMIN") {
 		throw HttpError.Unauthorized("Unauthorized");
 	}
 
@@ -48,7 +48,7 @@ export async function createGemstone(req: Request, res: Response) {
 }
 
 export async function updateGemstone(req: Request, res: Response) {
-	if (!req.user || req.user.role !== "ADMIN") {
+	if (req.user?.role !== "ADMIN") {
 		throw HttpError.Unauthorized("Unauthorized");
 	}
 
@@ -79,7 +79,7 @@ export async function updateGemstone(req: Request, res: Response) {
 }
 
 export async function deleteGemstone(req: Request, res: Response) {
-	if (!req.user || req.user.role !== "ADMIN") {
+	if (req.user?.role !== "ADMIN") {
 		throw HttpError.Unauthorized("Unauthorized");
 	}
 

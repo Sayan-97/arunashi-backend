@@ -66,6 +66,6 @@
 		"typescript": "^6.0.3"
 	},
 	"lint-staged": {
-		"*": "biome check --write"
+		"*": "biome check --write --no-errors-on-unmatched"
 	}
 }

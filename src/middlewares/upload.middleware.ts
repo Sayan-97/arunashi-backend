@@ -1,6 +1,6 @@
 import multer from "multer";
-import path from "path";
-import fs from "fs";
+import path from "node:path";
+import fs from "node:fs";
 
 // Ensure upload directory exists
 const uploadDir = path.join(process.cwd(), "public", "uploads", "magazines");
@@ -13,7 +13,7 @@ const storage = multer.diskStorage({
 		cb(null, uploadDir);
 	},
 	filename: (_req, file, cb) => {
-		const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+		const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
 		cb(null, uniqueSuffix + path.extname(file.originalname));
 	},
 });

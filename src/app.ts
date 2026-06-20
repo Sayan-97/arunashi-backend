@@ -22,7 +22,7 @@ const app: Express = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-import path from "path";
+import path from "node:path";
 app.use("/public", express.static(path.join(process.cwd(), "public")));
 app.use(
 	cors({

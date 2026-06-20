@@ -17,19 +17,30 @@ export async function sendActivationEmail(email: string, token: string) {
 		to: email,
 		subject: "Activate your account",
 		html: `
-      <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 8px;">
-        <h2 style="color: #111;">Welcome to Arunashi</h2>
-        <p>Dear Retailer,</p>
-        <p>Your registration request has been approved by the admin. Please click the button below to activate your account and set up your password:</p>
-        <div style="margin: 25px 0;">
-          <a href="${activationLink}" style="background-color: #000; color: #fff; padding: 12px 24px; text-decoration: none; font-weight: bold; border-radius: 4px; display: inline-block;">
+      <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: auto; padding: 25px; border: 1px solid #eee; border-radius: 8px; background-color: #ffffff;">
+        <div style="text-align: center; border-bottom: 2px solid #627426; padding-bottom: 15px; margin-bottom: 20px;">
+          <h2 style="color: #627426; margin: 0; font-size: 22px; text-transform: uppercase; letter-spacing: 1px;">Account Approved</h2>
+        </div>
+
+        <p style="font-size: 15px; color: #333;">Dear Retailer,</p>
+        <p style="font-size: 15px; color: #333;">We are pleased to inform you that your registration request for the Arunashi Retailer Portal has been approved by the administrator.</p>
+        <p style="font-size: 15px; color: #333;">Please click the button below to activate your account and set up your password:</p>
+        
+        <div style="text-align: center; margin: 30px 0;">
+          <a href="${activationLink}" style="background-color: #627426; color: #ffffff; padding: 12px 28px; text-decoration: none; font-weight: bold; border-radius: 4px; display: inline-block; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
             Activate Account
           </a>
         </div>
-        <p style="font-size: 13px; color: #666;">If the button above does not work, you can copy and paste the following link into your browser:</p>
-        <p style="font-size: 13px; color: #666; word-break: break-all;">${activationLink}</p>
+
+        <div style="background-color: #faf9f6; border: 1px solid #eeeeee; border-radius: 6px; padding: 15px; margin: 20px 0; font-size: 13px; color: #666;">
+          <p style="margin: 0 0 8px 0; font-weight: bold; color: #627426;">Having trouble with the button?</p>
+          <p style="margin: 0; word-break: break-all;">Copy and paste the following link into your browser:<br/>
+            <a href="${activationLink}" style="color: #627426; text-decoration: underline;">${activationLink}</a>
+          </p>
+        </div>
+
         <hr style="border: 0; border-top: 1px solid #eee; margin-top: 30px;" />
-        <p style="font-size: 12px; color: #999;">Best Regards,<br/><strong>Arunashi System</strong></p>
+        <p style="font-size: 12px; color: #999; text-align: center; margin-top: 15px;">Best Regards,<br/><strong>Arunashi System</strong></p>
       </div>
     `,
 	});

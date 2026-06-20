@@ -6,9 +6,11 @@ import {
 	getUserRequests,
 	getAllRequests,
 	updateRequestStatus,
-	getActiveProducts,
 	activateProduct,
 	deactivateProduct,
+	getAllProductData,
+	updateLinesheetLink,
+	syncProductsFromShopify,
 } from "@/services/product.service";
 import {
 	submitProductRequestSchema,
@@ -19,15 +21,19 @@ import { HttpError } from "@/helpers/errors";
 import { prisma } from "@/prisma";
 
 export async function getProductsController(_req: Request, res: Response) {
-	const [products, activeIds] = await Promise.all([
+	const [products, productData] = await Promise.all([
 		fetchShopifyProducts(),
-		getActiveProducts(),
+		getAllProductData(),
 	]);
 
-	const activeSet = new Set(activeIds);
+	const dataMap = new Map(productData.map((d: any) => [d.id, d]));
 	const filteredProducts = products
 		.filter((p: any) => p.status === "active")
-		.filter((p: any) => activeSet.has(String(p.id)));
+		.filter((p: any) => dataMap.get(String(p.id))?.isActive)
+		.map((p: any) => ({
+			...p,
+			linesheetLink: dataMap.get(String(p.id))?.linesheetLink || null,
+		}));
 
 	return sendResponse(res, 200, {
 		success: true,
@@ -49,18 +55,22 @@ export async function getAdminProductsController(req: Request, res: Response) {
 		throw HttpError.Unauthorized("Unauthorized");
 	}
 
-	const [products, activeIds] = await Promise.all([
+	const [products, productData] = await Promise.all([
 		fetchShopifyProducts(),
-		getActiveProducts(),
+		getAllProductData(),
 	]);
 
-	const activeSet = new Set(activeIds);
+	const dataMap = new Map(productData.map((d: any) => [d.id, d]));
 	const filteredProducts = products
 		.filter((p: any) => p.status === "active")
-		.map((p: any) => ({
-			...p,
-			isActivated: activeSet.has(String(p.id)),
-		}));
+		.map((p: any) => {
+			const dbData = dataMap.get(String(p.id));
+			return {
+				...p,
+				isActivated: dbData?.isActive ?? false,
+				linesheetLink: dbData?.linesheetLink || null,
+			};
+		});
 
 	return sendResponse(res, 200, {
 		success: true,
@@ -190,5 +200,55 @@ export async function updateRequestStatusController(
 		success: true,
 		message: "Request status updated successfully",
 		data: request,
+	});
+}
+
+export async function updateLinesheetLinkController(
+	req: Request,
+	res: Response,
+) {
+	if (!req.user) {
+		throw HttpError.Unauthorized("Unauthorized");
+	}
+
+	const { id } = req.params as { id: string };
+	const { link } = req.body as { link: string };
+
+	if (!id) {
+		throw HttpError.BadRequest("Product ID is required");
+	}
+
+	const record = await updateLinesheetLink(id, link || "");
+
+	await prisma.auditLog.create({
+		data: {
+			action: `Updated linesheet link for product: ${id}`,
+		},
+	});
+
+	return sendResponse(res, 200, {
+		success: true,
+		message: "Linesheet link updated successfully",
+		data: record,
+	});
+}
+
+export async function syncProductsController(req: Request, res: Response) {
+	if (!req.user) {
+		throw HttpError.Unauthorized("Unauthorized");
+	}
+
+	const result = await syncProductsFromShopify();
+
+	await prisma.auditLog.create({
+		data: {
+			action: `Synced ${result.synced} active products from Shopify`,
+		},
+	});
+
+	return sendResponse(res, 200, {
+		success: true,
+		message: `Successfully synced ${result.synced} products to the database`,
+		data: result,
 	});
 }

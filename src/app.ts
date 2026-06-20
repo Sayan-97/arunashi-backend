@@ -69,6 +69,8 @@ import DiamondRouter from "@/routes/diamond.route";
 app.use("/api/diamonds", DiamondRouter);
 import GemstoneRouter from "@/routes/gemstone.route";
 app.use("/api/gemstones", GemstoneRouter);
+import BannerRouter from "@/routes/banner.route";
+app.use("/api/banners", BannerRouter);
 
 app.all(/.*/, (_req, _res) => {
 	throw HttpError.NotFound("Route not found");

@@ -9,6 +9,8 @@ import {
 	getUserRequestsController,
 	getAllRequestsController,
 	updateRequestStatusController,
+	updateLinesheetLinkController,
+	syncProductsController,
 } from "@/controllers/product.controller";
 import { authenticate, authorize } from "@/middlewares/auth.middleware";
 
@@ -22,6 +24,7 @@ router.get(
 	authorize("ADMIN"),
 	getAdminProductsController,
 );
+router.post("/sync", authenticate, authorize("ADMIN"), syncProductsController);
 router.post(
 	"/:id/activate",
 	authenticate,
@@ -33,6 +36,12 @@ router.post(
 	authenticate,
 	authorize("ADMIN"),
 	deactivateProductController,
+);
+router.put(
+	"/:id/linesheet",
+	authenticate,
+	authorize("ADMIN"),
+	updateLinesheetLinkController,
 );
 
 router.post("/requests", authenticate, submitProductRequestController);

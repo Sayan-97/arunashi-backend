@@ -227,6 +227,7 @@ export async function fetchShopifyCollections() {
 						title
 						handle
 						updatedAt
+						description
 						image {
 							url
 							altText
@@ -280,6 +281,7 @@ export async function fetchShopifyCollections() {
 					title: node.title,
 					handle: node.handle,
 					updatedAt: node.updatedAt,
+					description: node.description,
 					image: node.image
 						? { url: node.image.url, altText: node.image.altText }
 						: null,
@@ -375,22 +377,57 @@ export async function updateRequestStatus(
 }
 
 export async function getActiveProducts() {
-	const activeRecords = await prisma.activeProduct.findMany({
+	const activeRecords = await prisma.productData.findMany({
+		where: { isActive: true },
 		select: { id: true },
 	});
 	return activeRecords.map((r) => r.id);
 }
 
+export async function getAllProductData() {
+	return prisma.productData.findMany();
+}
+
 export async function activateProduct(id: string) {
-	return prisma.activeProduct.upsert({
+	return prisma.productData.upsert({
 		where: { id },
-		update: {},
-		create: { id },
+		update: { isActive: true },
+		create: { id, isActive: true },
 	});
 }
 
 export async function deactivateProduct(id: string) {
-	return prisma.activeProduct.deleteMany({
+	return prisma.productData.upsert({
 		where: { id },
+		update: { isActive: false },
+		create: { id, isActive: false },
 	});
+}
+
+export async function updateLinesheetLink(id: string, link: string) {
+	return prisma.productData.upsert({
+		where: { id },
+		update: { linesheetLink: link },
+		create: { id, isActive: false, linesheetLink: link },
+	});
+}
+
+export async function syncProductsFromShopify() {
+	const products = await fetchShopifyProducts();
+
+	const activeProducts = products.filter((p: any) => p.status === "active");
+
+	const dataToInsert = activeProducts.map((p: any) => ({
+		id: String(p.id),
+		isActive: false,
+	}));
+
+	if (dataToInsert.length > 0) {
+		await prisma.productData.createMany({
+			data: dataToInsert,
+			skipDuplicates: true,
+		});
+	}
+
+	return { synced: activeProducts.length };
 }

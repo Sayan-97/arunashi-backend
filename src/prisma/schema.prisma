@@ -111,11 +111,14 @@ model ProductRequest {
   @@map("product_requests")
 }
 
-model ActiveProduct {
-  id        String   @id
-  createdAt DateTime @default(now()) @map("created_at")
+model ProductData {
+  id            String   @id
+  isActive      Boolean  @default(true) @map("is_active")
+  linesheetLink String?  @map("linesheet_link")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
 
-  @@map("active_products")
+  @@map("product_data")
 }
 
 model AuditLog {
@@ -153,4 +156,16 @@ model Gemstone {
   createdAt DateTime @default(now()) @map("created_at")
 
   @@map("gemstones")
+}
+
+model Banner {
+  id        String   @id @default(uuid())
+  image     String
+  link      String?
+  isActive  Boolean  @default(true) @map("is_active")
+  order     Int      @default(0)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("banners")
 }

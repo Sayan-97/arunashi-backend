@@ -9,6 +9,7 @@ import {
 import { sendResponse } from "@/helpers/sendResponse";
 import { changePasswordSchema } from "@/validations/auth.validation";
 import { HttpError } from "@/helpers/errors";
+import { realtimeService } from "@/services/realtime.service";
 
 type ApproveRegistrationParams = {
 	id: string;
@@ -19,6 +20,8 @@ export async function approveRegistrationController(
 	res: Response,
 ) {
 	const result = await approveRegistration(req.params.id);
+
+	realtimeService.broadcast("retailers:approved", { id: req.params.id });
 
 	return sendResponse(res, 200, {
 		success: true,

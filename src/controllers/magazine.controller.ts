@@ -2,6 +2,7 @@ import type { Request, Response } from "express";
 import { prisma } from "../prisma/index";
 import { HttpError } from "../helpers/errors";
 import { sendResponse } from "../helpers/sendResponse";
+import { realtimeService } from "../services/realtime.service";
 
 export async function getMagazines(_req: Request, res: Response) {
 	try {
@@ -44,6 +45,8 @@ export async function createMagazine(req: Request, res: Response) {
 			},
 		});
 
+		realtimeService.broadcast("magazines:updated", magazine);
+
 		return sendResponse(res, 201, {
 			success: true,
 			data: magazine,
@@ -82,6 +85,8 @@ export async function updateMagazine(req: Request, res: Response) {
 			data: updateData,
 		});
 
+		realtimeService.broadcast("magazines:updated", magazine);
+
 		return sendResponse(res, 200, {
 			success: true,
 			data: magazine,
@@ -103,6 +108,8 @@ export async function deleteMagazine(req: Request, res: Response) {
 		await prisma.magazine.delete({
 			where: { id: id as string },
 		});
+
+		realtimeService.broadcast("magazines:updated", { id });
 
 		return sendResponse(res, 200, {
 			success: true,

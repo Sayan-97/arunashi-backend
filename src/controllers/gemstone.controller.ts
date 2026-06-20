@@ -2,6 +2,7 @@ import type { Request, Response } from "express";
 import { prisma } from "../prisma/index";
 import { HttpError } from "../helpers/errors";
 import { sendResponse } from "../helpers/sendResponse";
+import { realtimeService } from "../services/realtime.service";
 
 export async function getGemstones(_req: Request, res: Response) {
 	try {
@@ -37,6 +38,8 @@ export async function createGemstone(req: Request, res: Response) {
 			},
 		});
 
+		realtimeService.broadcast("gemstones:updated", gemstone);
+
 		return sendResponse(res, 201, {
 			success: true,
 			data: gemstone,
@@ -68,6 +71,8 @@ export async function updateGemstone(req: Request, res: Response) {
 			},
 		});
 
+		realtimeService.broadcast("gemstones:updated", gemstone);
+
 		return sendResponse(res, 200, {
 			success: true,
 			data: gemstone,
@@ -89,6 +94,8 @@ export async function deleteGemstone(req: Request, res: Response) {
 		await prisma.gemstone.delete({
 			where: { id: id as string },
 		});
+
+		realtimeService.broadcast("gemstones:updated", { id });
 
 		return sendResponse(res, 200, {
 			success: true,

@@ -19,6 +19,7 @@ import {
 import { sendResponse } from "@/helpers/sendResponse";
 import { HttpError } from "@/helpers/errors";
 import { prisma } from "@/prisma";
+import { realtimeService } from "@/services/realtime.service";
 
 export async function getProductsController(_req: Request, res: Response) {
 	const [products, productData] = await Promise.all([
@@ -97,6 +98,8 @@ export async function activateProductController(req: Request, res: Response) {
 		},
 	});
 
+	realtimeService.broadcast("products:updated", record);
+
 	return sendResponse(res, 200, {
 		success: true,
 		message: "Product activated successfully",
@@ -123,6 +126,8 @@ export async function deactivateProductController(req: Request, res: Response) {
 		},
 	});
 
+	realtimeService.broadcast("products:updated", { id });
+
 	return sendResponse(res, 200, {
 		success: true,
 		message: "Product deactivated successfully",
@@ -140,6 +145,8 @@ export async function submitProductRequestController(
 	const body = submitProductRequestSchema.parse(req.body);
 
 	const request = await submitProductRequest(req.user.id, body.items);
+
+	realtimeService.broadcast("requests:submitted", request);
 
 	return sendResponse(res, 201, {
 		success: true,
@@ -196,6 +203,8 @@ export async function updateRequestStatusController(
 		},
 	});
 
+	realtimeService.broadcast("requests:updated", request);
+
 	return sendResponse(res, 200, {
 		success: true,
 		message: "Request status updated successfully",
@@ -226,6 +235,8 @@ export async function updateLinesheetLinkController(
 		},
 	});
 
+	realtimeService.broadcast("products:updated", record);
+
 	return sendResponse(res, 200, {
 		success: true,
 		message: "Linesheet link updated successfully",
@@ -245,6 +256,8 @@ export async function syncProductsController(req: Request, res: Response) {
 			action: `Synced ${result.synced} active products from Shopify`,
 		},
 	});
+
+	realtimeService.broadcast("products:updated", result);
 
 	return sendResponse(res, 200, {
 		success: true,

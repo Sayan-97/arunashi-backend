@@ -2,6 +2,7 @@ import type { Request, Response } from "express";
 import { prisma } from "../prisma/index";
 import { HttpError } from "../helpers/errors";
 import { sendResponse } from "../helpers/sendResponse";
+import { realtimeService } from "../services/realtime.service";
 
 export async function getDiamonds(_req: Request, res: Response) {
 	try {
@@ -37,6 +38,8 @@ export async function createDiamond(req: Request, res: Response) {
 			},
 		});
 
+		realtimeService.broadcast("diamonds:updated", diamond);
+
 		return sendResponse(res, 201, {
 			success: true,
 			data: diamond,
@@ -68,6 +71,8 @@ export async function updateDiamond(req: Request, res: Response) {
 			},
 		});
 
+		realtimeService.broadcast("diamonds:updated", diamond);
+
 		return sendResponse(res, 200, {
 			success: true,
 			data: diamond,
@@ -89,6 +94,8 @@ export async function deleteDiamond(req: Request, res: Response) {
 		await prisma.diamond.delete({
 			where: { id: id as string },
 		});
+
+		realtimeService.broadcast("diamonds:updated", { id });
 
 		return sendResponse(res, 200, {
 			success: true,

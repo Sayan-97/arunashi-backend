@@ -4,6 +4,7 @@ import { HttpError } from "../helpers/errors";
 import { sendResponse } from "../helpers/sendResponse";
 import fs from "node:fs";
 import path from "node:path";
+import { realtimeService } from "../services/realtime.service";
 
 export async function getBanners(_req: Request, res: Response) {
 	try {
@@ -67,6 +68,8 @@ export async function createBanner(req: Request, res: Response) {
 			},
 		});
 
+		realtimeService.broadcast("banners:updated", banner);
+
 		return sendResponse(res, 201, {
 			success: true,
 			data: banner,
@@ -107,6 +110,8 @@ export async function updateBanner(req: Request, res: Response) {
 			data: updateData,
 		});
 
+		realtimeService.broadcast("banners:updated", banner);
+
 		return sendResponse(res, 200, {
 			success: true,
 			data: banner,
@@ -139,6 +144,8 @@ export async function toggleBannerStatus(req: Request, res: Response) {
 				isActive: !existingBanner.isActive,
 			},
 		});
+
+		realtimeService.broadcast("banners:updated", banner);
 
 		return sendResponse(res, 200, {
 			success: true,
@@ -179,6 +186,8 @@ export async function deleteBanner(req: Request, res: Response) {
 		await prisma.banner.delete({
 			where: { id: id as string },
 		});
+
+		realtimeService.broadcast("banners:updated", { id });
 
 		return sendResponse(res, 200, {
 			success: true,

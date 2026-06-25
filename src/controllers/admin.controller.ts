@@ -5,6 +5,7 @@ import {
 	getApprovedRetailers,
 	changeAdminPassword,
 	getAuditLogs,
+	resendActivation,
 } from "@/services/admin.service";
 import { sendResponse } from "@/helpers/sendResponse";
 import { changePasswordSchema } from "@/validations/auth.validation";
@@ -26,6 +27,23 @@ export async function approveRegistrationController(
 	return sendResponse(res, 200, {
 		success: true,
 		message: "Registration approved successfully",
+		data: result,
+	});
+}
+
+type ResendActivationParams = {
+	id: string;
+};
+
+export async function resendActivationController(
+	req: Request<ResendActivationParams>,
+	res: Response,
+) {
+	const result = await resendActivation(req.params.id);
+
+	return sendResponse(res, 200, {
+		success: true,
+		message: "Activation email resent successfully",
 		data: result,
 	});
 }

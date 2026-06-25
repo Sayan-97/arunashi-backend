@@ -31,7 +31,7 @@ export async function activateAccount(payload: ActivateInput) {
 
 	const registration = activation.registrationRequest;
 
-	await prisma.$transaction([
+	const [user] = await prisma.$transaction([
 		prisma.user.create({
 			data: {
 				name: registration.name,
@@ -55,6 +55,8 @@ export async function activateAccount(payload: ActivateInput) {
 			},
 		}),
 	]);
+
+	return user;
 }
 
 export async function login(payload: LoginInput) {

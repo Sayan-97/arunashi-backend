@@ -56,12 +56,76 @@ export async function approveRegistration(requestId: string) {
 export async function getPendingRegistrations() {
 	return prisma.registrationRequest.findMany({
 		where: {
-			status: "PENDING",
+			OR: [
+				{
+					status: "PENDING",
+				},
+				{
+					status: "APPROVED",
+					user: null,
+				},
+			],
 		},
 		orderBy: {
 			createdAt: "desc",
 		},
 	});
+}
+
+export async function resendActivation(requestId: string) {
+	const request = await prisma.registrationRequest.findUnique({
+		where: {
+			id: requestId,
+		},
+		include: {
+			user: true,
+			activationToken: true,
+		},
+	});
+
+	if (!request) {
+		throw HttpError.NotFound("Request Not Found");
+	}
+
+	if (request.status !== "APPROVED") {
+		throw HttpError.BadRequest("Request must be approved to resend activation");
+	}
+
+	if (request.user) {
+		throw HttpError.BadRequest("Retailer has already created their account");
+	}
+
+	const token = randomUUID();
+
+	await prisma.$transaction(async (tx) => {
+		if (request.activationToken) {
+			await tx.activationToken.delete({
+				where: {
+					id: request.activationToken.id,
+				},
+			});
+		}
+
+		await tx.activationToken.create({
+			data: {
+				token,
+				expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24),
+				registrationRequestId: request.id,
+			},
+		});
+
+		await tx.auditLog.create({
+			data: {
+				action: `Resent activation link for ${request.email} (${request.company})`,
+			},
+		});
+	});
+
+	await sendActivationEmail(request.email, token);
+
+	return {
+		success: true,
+	};
 }
 
 export async function getApprovedRetailers() {

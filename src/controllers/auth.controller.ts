@@ -13,11 +13,14 @@ import {
 	refreshTokenCookieOptions,
 } from "@/configs/cookie";
 import { HttpError } from "@/helpers/errors";
+import { realtimeService } from "@/services/realtime.service";
 
 export async function activateAccountController(req: Request, res: Response) {
 	const body = activateSchema.parse(req.body);
 
-	await activateAccount(body);
+	const user = await activateAccount(body);
+
+	realtimeService.broadcast("retailers:activated", { email: user.email });
 
 	return sendResponse(res, 200, {
 		success: true,

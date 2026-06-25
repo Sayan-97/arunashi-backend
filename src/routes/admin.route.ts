@@ -4,6 +4,7 @@ import {
 	getApprovedRetailersController,
 	changePasswordController,
 	getAuditLogsController,
+	resendActivationController,
 } from "@/controllers/admin.controller";
 import { Router } from "express";
 import { authenticate, authorize } from "@/middlewares/auth.middleware";
@@ -28,6 +29,13 @@ router.post(
 	authorize("ADMIN"),
 	approveRegistrationController,
 );
+router.post(
+	"/registrations/:id/resend-activation",
+	authenticate,
+	authorize("ADMIN"),
+	resendActivationController,
+);
+
 router.post(
 	"/settings/change-password",
 	authenticate,

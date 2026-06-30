@@ -3,6 +3,8 @@ import { prisma } from "../prisma/index";
 import { HttpError } from "../helpers/errors";
 import { sendResponse } from "../helpers/sendResponse";
 import { realtimeService } from "../services/realtime.service";
+import fs from "fs";
+import path from "path";
 
 export async function getGemstones(_req: Request, res: Response) {
 	try {
@@ -25,9 +27,20 @@ export async function createGemstone(req: Request, res: Response) {
 		throw HttpError.Unauthorized("Unauthorized");
 	}
 
-	const { name, link } = req.body;
-	if (!name || !link) {
-		throw HttpError.BadRequest("Name and link are required");
+	let name = req.body.name;
+
+	if (!req.file) {
+		throw HttpError.BadRequest("PDF file is required");
+	}
+
+	const link = `/public/uploads/gemstones/${req.file.filename}`;
+
+	if (!name) {
+		name = req.file.filename
+			.replace(/\.pdf$/i, "")
+			.split(" ")
+			.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+			.join(" ");
 	}
 
 	try {
@@ -56,13 +69,42 @@ export async function updateGemstone(req: Request, res: Response) {
 	}
 
 	const { id } = req.params;
-	const { name, link } = req.body;
+	const { name } = req.body;
 
-	if (!name || !link) {
-		throw HttpError.BadRequest("Name and link are required");
+	if (!name) {
+		throw HttpError.BadRequest("Name is required");
 	}
 
 	try {
+		const existingGemstone = await prisma.gemstone.findUnique({
+			where: { id: id as string },
+		});
+
+		if (!existingGemstone) {
+			throw HttpError.NotFound("Gemstone not found");
+		}
+
+		let link = existingGemstone.link;
+
+		if (req.file) {
+			link = `/public/uploads/gemstones/${req.file.filename}`;
+
+			// Delete old file if it exists and is different
+			if (existingGemstone.link && existingGemstone.link !== link) {
+				const oldFilename = existingGemstone.link.split("/").pop();
+				if (oldFilename) {
+					const oldFilePath = path.join(
+						__dirname,
+						"../../../public/uploads/gemstones",
+						oldFilename,
+					);
+					if (fs.existsSync(oldFilePath)) {
+						fs.unlinkSync(oldFilePath);
+					}
+				}
+			}
+		}
+
 		const gemstone = await prisma.gemstone.update({
 			where: { id: id as string },
 			data: {
@@ -91,6 +133,24 @@ export async function deleteGemstone(req: Request, res: Response) {
 	const { id } = req.params;
 
 	try {
+		const existingGemstone = await prisma.gemstone.findUnique({
+			where: { id: id as string },
+		});
+
+		if (existingGemstone && existingGemstone.link) {
+			const filename = existingGemstone.link.split("/").pop();
+			if (filename) {
+				const filePath = path.join(
+					__dirname,
+					"../../../public/uploads/gemstones",
+					filename,
+				);
+				if (fs.existsSync(filePath)) {
+					fs.unlinkSync(filePath);
+				}
+			}
+		}
+
 		await prisma.gemstone.delete({
 			where: { id: id as string },
 		});

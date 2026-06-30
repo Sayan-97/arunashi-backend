@@ -1,0 +1,5 @@
+export const DEFAULT_ABOUT = `The story of ArunAshi begins in 2004 when the brand was founded by husband-and-wife team Arun Bohra and Ashita Shah-Bohra. A combination of their names, ArunAshi has always been about more than designing and manufacturing fine jewelry: it is a celebration of 150 years of heritage, a bold act of rebellion, and a testament to true love.
+
+An eighth-generation jeweler from Jaipur, Arun is both a master designer and an Alchemist who takes the elements of the Earth and transforms them into exceptional pieces of fine jewelry. Known for his bold use of ultra-rare colored gemstones, masterful metalwork, and devotion to upholding the finest technical achievements of old-world craftsmanship, Arun's designs are wearable pieces of art imbued with beauty, meaning, desire and fun.
+
+Each piece of ArunAshi jewelry is a modern heirloom that weaves together tradition and innovation, sensuality and geometry, drama and subtlety. Deeply personal, mischievously playful, and ravishingly unique, ArunAshi designs jewelry for those head-over-heels in love with life.`;

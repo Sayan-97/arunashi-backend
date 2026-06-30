@@ -189,3 +189,27 @@ model Notification {
 
   @@map("notifications")
 }
+
+model TermsAndConditions {
+  id        String   @id @default(uuid())
+  content   String   @db.Text
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("terms_and_conditions")
+}
+
+model PrivacyPolicy {
+  id        String   @id @default(uuid())
+  content   String   @db.Text
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("privacy_policy")
+}
+
+model AboutUs {
+  id        String   @id @default(uuid())
+  content   String   @db.Text
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("about_us")
+}

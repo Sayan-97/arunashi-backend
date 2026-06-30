@@ -75,6 +75,12 @@ import RealtimeRouter from "@/routes/realtime.route";
 app.use("/api/realtime", RealtimeRouter);
 import { NotificationRouter } from "@/routes/notification.route";
 app.use("/api/notifications", NotificationRouter);
+import TermsRouter from "@/routes/terms.route";
+app.use("/api/terms", TermsRouter);
+import PrivacyRouter from "@/routes/privacy.route";
+app.use("/api/privacy", PrivacyRouter);
+import AboutRouter from "@/routes/about.route";
+app.use("/api/about", AboutRouter);
 
 app.all(/.*/, (_req, _res) => {
 	throw HttpError.NotFound("Route not found");

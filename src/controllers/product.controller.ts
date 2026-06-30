@@ -1,4 +1,6 @@
 import type { Request, Response } from "express";
+import fs from "node:fs";
+import path from "node:path";
 import {
 	fetchShopifyProducts,
 	fetchShopifyCollections,
@@ -234,13 +236,45 @@ export async function updateLinesheetLinkController(
 	}
 
 	const { id } = req.params as { id: string };
-	const { link } = req.body as { link: string };
 
 	if (!id) {
 		throw HttpError.BadRequest("Product ID is required");
 	}
 
-	const record = await updateLinesheetLink(id, link || "");
+	const currentData = await prisma.productData.findUnique({
+		where: { id },
+	});
+
+	let link = currentData?.linesheetLink || null;
+
+	if (req.file) {
+		link = `/public/uploads/linesheets/${req.file.filename}`;
+
+		if (currentData?.linesheetLink) {
+			const oldPath = path.join(process.cwd(), currentData.linesheetLink);
+			if (fs.existsSync(oldPath)) {
+				try {
+					fs.unlinkSync(oldPath);
+				} catch (err) {
+					console.error(`Failed to delete old linesheet file: ${oldPath}`, err);
+				}
+			}
+		}
+	} else if (req.body.deleteFile === "true" || req.body.link === "") {
+		link = null;
+		if (currentData?.linesheetLink) {
+			const oldPath = path.join(process.cwd(), currentData.linesheetLink);
+			if (fs.existsSync(oldPath)) {
+				try {
+					fs.unlinkSync(oldPath);
+				} catch (err) {
+					console.error(`Failed to delete linesheet file: ${oldPath}`, err);
+				}
+			}
+		}
+	}
+
+	const record = await updateLinesheetLink(id, link);
 
 	await prisma.auditLog.create({
 		data: {

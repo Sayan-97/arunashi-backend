@@ -62,6 +62,10 @@ export async function fetchShopifyProducts() {
                             title
                             price
                             sku
+                            selectedOptions {
+                                name
+                                value
+                            }
                             inventoryQuantity
                             inventoryItem {
                                 measurement {
@@ -188,11 +192,19 @@ export async function fetchShopifyProducts() {
 						const weightUnit =
 							vEdge.node.inventoryItem?.measurement?.weight?.unit || "";
 
+						const selectedOpts = vEdge.node.selectedOptions || [];
+						const option1 = selectedOpts[0]?.value || null;
+						const option2 = selectedOpts[1]?.value || null;
+						const option3 = selectedOpts[2]?.value || null;
+
 						return {
 							id: vEdge.node.id.split("/").pop(),
 							title: vEdge.node.title,
 							price: vEdge.node.price,
 							sku: vEdge.node.sku,
+							option1,
+							option2,
+							option3,
 							inventory_quantity: vEdge.node.inventoryQuantity || 0,
 							weight: weightVal,
 							weight_unit: mapWeightUnit(weightUnit),
@@ -404,7 +416,7 @@ export async function deactivateProduct(id: string) {
 	});
 }
 
-export async function updateLinesheetLink(id: string, link: string) {
+export async function updateLinesheetLink(id: string, link: string | null) {
 	return prisma.productData.upsert({
 		where: { id },
 		update: { linesheetLink: link },

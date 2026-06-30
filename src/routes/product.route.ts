@@ -13,6 +13,7 @@ import {
 	syncProductsController,
 } from "@/controllers/product.controller";
 import { authenticate, authorize } from "@/middlewares/auth.middleware";
+import { uploadLinesheet } from "@/middlewares/linesheet.middleware";
 
 const router: Router = Router();
 
@@ -41,6 +42,7 @@ router.put(
 	"/:id/linesheet",
 	authenticate,
 	authorize("ADMIN"),
+	uploadLinesheet.single("pdf"),
 	updateLinesheetLinkController,
 );
 

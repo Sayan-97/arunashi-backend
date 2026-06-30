@@ -1,61 +1,142 @@
 {
-	"id": "9917264658730",
+	"id": 9917264658730,
 	"title": "Lotus Flower Diamond Bracelet",
-	"handle": "lotus-flower-diamond-bracelet",
 	"body_html": "<p><meta charset=\"utf-8\">Diamond petals unfold in a lotus motif, symbolizing transformation, balance, and nature’s quiet strength.</p>",
 	"vendor": "Arunashi",
 	"product_type": "Bracelet",
+	"created_at": "2025-10-20T15:57:50-04:00",
+	"handle": "lotus-flower-diamond-bracelet",
+	"updated_at": "2026-05-08T18:06:28-04:00",
+	"published_at": "2025-10-20T15:57:50-04:00",
+	"template_suffix": null,
+	"published_scope": "global",
 	"tags": "Collectible Art",
 	"status": "active",
+	"admin_graphql_api_id": "gid://shopify/Product/9917264658730",
 	"variants": [
 		{
-			"id": "50718368301354",
+			"id": 50718368301354,
+			"product_id": 9917264658730,
 			"title": "18K White Gold / Diamond",
 			"price": "58500.00",
-			"sku": "2B000075 BXXXDIWGCA"
+			"position": 1,
+			"inventory_policy": "deny",
+			"compare_at_price": null,
+			"option1": "18K White Gold",
+			"option2": "Diamond",
+			"option3": null,
+			"created_at": "2025-10-20T15:57:51-04:00",
+			"updated_at": "2025-10-22T14:37:08-04:00",
+			"taxable": true,
+			"barcode": null,
+			"fulfillment_service": "manual",
+			"grams": 0,
+			"inventory_management": null,
+			"requires_shipping": true,
+			"sku": "2B000075 BXXXDIWGCA",
+			"weight": 0.0,
+			"weight_unit": "lb",
+			"inventory_item_id": 52804288446762,
+			"inventory_quantity": 0,
+			"old_inventory_quantity": 0,
+			"admin_graphql_api_id": "gid://shopify/ProductVariant/50718368301354",
+			"image_id": null
+		}
+	],
+	"options": [
+		{
+			"id": 12427113038122,
+			"product_id": 9917264658730,
+			"name": "Material",
+			"position": 1,
+			"values": ["18K White Gold"]
+		},
+		{
+			"id": 12427113070890,
+			"product_id": 9917264658730,
+			"name": "Stones",
+			"position": 2,
+			"values": ["Diamond"]
 		}
 	],
 	"images": [
 		{
-			"src": "https://cdn.shopify.com/s/files/1/0863/0032/8234/files/WhiteBackgroundImageInstructionsExamplesWebsite_5_a97b4a50-6272-4a42-926d-907ce1fb6d43.png?v=1766002630"
+			"id": 51167535726890,
+			"alt": null,
+			"position": 1,
+			"product_id": 9917264658730,
+			"created_at": "2025-12-17T15:16:59-05:00",
+			"updated_at": "2025-12-17T15:17:10-05:00",
+			"admin_graphql_api_id": "gid://shopify/MediaImage/42010454786346",
+			"width": 3500,
+			"height": 4000,
+			"src": "https://cdn.shopify.com/s/files/1/0863/0032/8234/files/WhiteBackgroundImageInstructionsExamplesWebsite_5_a97b4a50-6272-4a42-926d-907ce1fb6d43.png?v=1766002630",
+			"variant_ids": []
 		},
 		{
-			"src": "https://cdn.shopify.com/s/files/1/0863/0032/8234/files/2_d55221af-4bfb-48e0-b00e-e2ba8f618b2e.png?v=1766002630"
+			"id": 50323812647210,
+			"alt": null,
+			"position": 2,
+			"product_id": 9917264658730,
+			"created_at": "2025-10-22T14:20:40-04:00",
+			"updated_at": "2025-12-17T15:17:10-05:00",
+			"admin_graphql_api_id": "gid://shopify/MediaImage/41183869960490",
+			"width": 1500,
+			"height": 1714,
+			"src": "https://cdn.shopify.com/s/files/1/0863/0032/8234/files/2_d55221af-4bfb-48e0-b00e-e2ba8f618b2e.png?v=1766002630",
+			"variant_ids": []
 		},
 		{
-			"src": "https://cdn.shopify.com/s/files/1/0863/0032/8234/files/3_f382df1a-c2ae-49c0-b0c9-03494b5266be.png?v=1766002630"
+			"id": 50323812974890,
+			"alt": null,
+			"position": 3,
+			"product_id": 9917264658730,
+			"created_at": "2025-10-22T14:20:48-04:00",
+			"updated_at": "2025-12-17T15:17:10-05:00",
+			"admin_graphql_api_id": "gid://shopify/MediaImage/41183870255402",
+			"width": 1500,
+			"height": 1714,
+			"src": "https://cdn.shopify.com/s/files/1/0863/0032/8234/files/3_f382df1a-c2ae-49c0-b0c9-03494b5266be.png?v=1766002630",
+			"variant_ids": []
 		},
 		{
-			"src": "https://cdn.shopify.com/s/files/1/0863/0032/8234/files/4_277ef39a-1648-4121-bf60-54bbca5fae6c.png?v=1766002630"
+			"id": 50323815465258,
+			"alt": null,
+			"position": 4,
+			"product_id": 9917264658730,
+			"created_at": "2025-10-22T14:20:56-04:00",
+			"updated_at": "2025-12-17T15:17:10-05:00",
+			"admin_graphql_api_id": "gid://shopify/MediaImage/41183872745770",
+			"width": 1500,
+			"height": 1714,
+			"src": "https://cdn.shopify.com/s/files/1/0863/0032/8234/files/4_277ef39a-1648-4121-bf60-54bbca5fae6c.png?v=1766002630",
+			"variant_ids": []
 		},
 		{
-			"src": "https://cdn.shopify.com/s/files/1/0863/0032/8234/files/5_711c9732-9289-4790-8a2c-4b1180faecba.png?v=1766002630"
+			"id": 50323815956778,
+			"alt": null,
+			"position": 5,
+			"product_id": 9917264658730,
+			"created_at": "2025-10-22T14:21:06-04:00",
+			"updated_at": "2025-12-17T15:17:10-05:00",
+			"admin_graphql_api_id": "gid://shopify/MediaImage/41183873270058",
+			"width": 1500,
+			"height": 1714,
+			"src": "https://cdn.shopify.com/s/files/1/0863/0032/8234/files/5_711c9732-9289-4790-8a2c-4b1180faecba.png?v=1766002630",
+			"variant_ids": []
 		}
 	],
-	"media": [
-		{
-			"type": "image",
-			"src": "https://cdn.shopify.com/s/files/1/0863/0032/8234/files/WhiteBackgroundImageInstructionsExamplesWebsite_5_a97b4a50-6272-4a42-926d-907ce1fb6d43.png?v=1766002630"
-		},
-		{
-			"type": "image",
-			"src": "https://cdn.shopify.com/s/files/1/0863/0032/8234/files/2_d55221af-4bfb-48e0-b00e-e2ba8f618b2e.png?v=1766002630"
-		},
-		{
-			"type": "image",
-			"src": "https://cdn.shopify.com/s/files/1/0863/0032/8234/files/3_f382df1a-c2ae-49c0-b0c9-03494b5266be.png?v=1766002630"
-		},
-		{
-			"type": "image",
-			"src": "https://cdn.shopify.com/s/files/1/0863/0032/8234/files/4_277ef39a-1648-4121-bf60-54bbca5fae6c.png?v=1766002630"
-		},
-		{
-			"type": "image",
-			"src": "https://cdn.shopify.com/s/files/1/0863/0032/8234/files/5_711c9732-9289-4790-8a2c-4b1180faecba.png?v=1766002630"
-		},
-		{
-			"type": "video",
-			"src": "https://cdn.shopify.com/videos/c/vp/ac9cc8fd21584d55929bc49e492e38dc/ac9cc8fd21584d55929bc49e492e38dc.SD-480p-1.5Mbps-77837576.mp4"
-		}
-	]
+	"image": {
+		"id": 51167535726890,
+		"alt": null,
+		"position": 1,
+		"product_id": 9917264658730,
+		"created_at": "2025-12-17T15:16:59-05:00",
+		"updated_at": "2025-12-17T15:17:10-05:00",
+		"admin_graphql_api_id": "gid://shopify/MediaImage/42010454786346",
+		"width": 3500,
+		"height": 4000,
+		"src": "https://cdn.shopify.com/s/files/1/0863/0032/8234/files/WhiteBackgroundImageInstructionsExamplesWebsite_5_a97b4a50-6272-4a42-926d-907ce1fb6d43.png?v=1766002630",
+		"variant_ids": []
+	}
 }

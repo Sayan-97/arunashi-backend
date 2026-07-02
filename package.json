@@ -24,6 +24,8 @@
 		"biome:check": "biome check --write",
 		"onboard:admin": "tsx src/scripts/onboard-admin.ts",
 		"sync:metadata": "tsx src/scripts/sync-product-metadata.ts",
+		"seed:collections": "tsx src/scripts/download-collections.ts",
+		"seed:categories": "tsx src/scripts/download-categories.ts",
 		"prepare": "husky"
 	},
 	"keywords": [],

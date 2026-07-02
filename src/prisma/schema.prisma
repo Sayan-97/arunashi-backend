@@ -129,6 +129,9 @@ model ProductData {
   createdAt           DateTime @default(now()) @map("created_at")
   updatedAt           DateTime @updatedAt @map("updated_at")
 
+  collections         ProductCollection[]
+  categories          ProductCategory[]
+
   @@map("product_data")
 }
 
@@ -215,4 +218,52 @@ model AboutUs {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("about_us")
+}
+
+model Collection {
+  id          String   @id @default(uuid())
+  name        String
+  handle      String   @unique
+  description String?
+  image       String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  products    ProductCollection[]
+
+  @@map("collections")
+}
+
+model ProductCollection {
+  productId    String      @map("product_id")
+  product      ProductData @relation(fields: [productId], references: [id], onDelete: Cascade)
+  collectionId String      @map("collection_id")
+  collection   Collection  @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+
+  @@id([productId, collectionId])
+  @@map("product_collections")
+}
+
+model Category {
+  id          String   @id @default(uuid())
+  name        String
+  handle      String   @unique
+  description String?
+  image       String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  products    ProductCategory[]
+
+  @@map("categories")
+}
+
+model ProductCategory {
+  productId  String      @map("product_id")
+  product    ProductData @relation(fields: [productId], references: [id], onDelete: Cascade)
+  categoryId String      @map("category_id")
+  category   Category    @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([productId, categoryId])
+  @@map("product_categories")
 }

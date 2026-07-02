@@ -1,3 +1,4 @@
+// Force reload to pick up generated Prisma client changes
 import type { Server } from "node:http";
 
 import app from "@/app";

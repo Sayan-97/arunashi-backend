@@ -62,7 +62,9 @@ export async function getPendingRegistrations() {
 				},
 				{
 					status: "APPROVED",
-					user: null,
+					user: {
+						is: null,
+					},
 				},
 			],
 		},

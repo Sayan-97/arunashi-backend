@@ -31,6 +31,9 @@ async function generateCoverFromPdf(pdfFilePath: string): Promise<string> {
 	}
 
 	const firstPage = pngPages[0];
+	if (!firstPage.content) {
+		throw new Error("Failed to render PDF page content");
+	}
 	const baseName = path.basename(pdfFilePath, ".pdf");
 	const coverFilename = `${Date.now()}-${baseName}-cover.png`;
 	const coverFilePath = path.join(

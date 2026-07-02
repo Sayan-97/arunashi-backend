@@ -120,11 +120,14 @@ model ProductRequest {
 }
 
 model ProductData {
-  id            String   @id
-  isActive      Boolean  @default(true) @map("is_active")
-  linesheetLink String?  @map("linesheet_link")
-  createdAt     DateTime @default(now()) @map("created_at")
-  updatedAt     DateTime @updatedAt @map("updated_at")
+  id                  String   @id
+  isActive            Boolean  @default(true) @map("is_active")
+  linesheetLink       String?  @map("linesheet_link")
+  gemstoneDetails     String?  @map("gemstone_details")
+  diamondShapeDetails String?  @map("diamond_shape_details")
+  certificates        String?  @map("certificates")
+  createdAt           DateTime @default(now()) @map("created_at")
+  updatedAt           DateTime @updatedAt @map("updated_at")
 
   @@map("product_data")
 }

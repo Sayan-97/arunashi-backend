@@ -37,6 +37,10 @@ export async function getProductsController(_req: Request, res: Response) {
 		.map((p: any) => ({
 			...p,
 			linesheetLink: dataMap.get(String(p.id))?.linesheetLink || null,
+			gemstoneDetails: dataMap.get(String(p.id))?.gemstoneDetails || null,
+			diamondShapeDetails:
+				dataMap.get(String(p.id))?.diamondShapeDetails || null,
+			certificates: dataMap.get(String(p.id))?.certificates || null,
 		}));
 
 	return sendResponse(res, 200, {
@@ -73,6 +77,9 @@ export async function getAdminProductsController(req: Request, res: Response) {
 				...p,
 				isActivated: dbData?.isActive ?? false,
 				linesheetLink: dbData?.linesheetLink || null,
+				gemstoneDetails: dbData?.gemstoneDetails || null,
+				diamondShapeDetails: dbData?.diamondShapeDetails || null,
+				certificates: dbData?.certificates || null,
 			};
 		});
 

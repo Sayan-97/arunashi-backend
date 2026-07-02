@@ -23,6 +23,7 @@
 		"biome:format": "biome format --write",
 		"biome:check": "biome check --write",
 		"onboard:admin": "tsx src/scripts/onboard-admin.ts",
+		"sync:metadata": "tsx src/scripts/sync-product-metadata.ts",
 		"prepare": "husky"
 	},
 	"keywords": [],
